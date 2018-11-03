@@ -1,0 +1,38 @@
+# from input file write col1-100 and col2+100 to output file
+awk -v s=100 '{print $1-s, $2+s}' i > o
+
+# Bedtools getfasta takes it as (x,y] but i want [52,52], so i wrote it like (53,52]
+awk '{print $1 " " ($2-53) " " ($2+52)}' i > o 
+
+# put line number as the last column of the file. i has 3 cols
+awk '{print $1, $2, $3, NR}' i > o
+
+# add "CHR" to the beginning of all values in $1. i has 4 cols
+awk '{print "CHR" $1, $2, $3, $4}' i > o 
+
+# insert "chr" prefix into file:
+sed -i -e 's/^>/>chr/' i
+
+# for lines starting with NC_0000, change line with the values between chromosome and , in line
+sed -r '/>NC_0000/ s/.*chromosome (.*),.*/>\1/' i > o  
+
+# change space delimited to tab delimited
+sed 's/ /\t/g' i > o
+
+# count columns if comma delimited
+head -1 i | sed 's/[^,]//g' | wc -c
+
+# count numbers like "023534039"
+head -1 i | sed 's/[^0-9]//g' | wc -c
+
+# remove column 5
+cut -d, -f-4,6- < input > output
+
+# take only autosomal chromosomes [1,22] from the first column and write them to output file
+awk '($1<23)' i > o
+
+# take the first 1150640 (autosomal) lines and write them to output file
+awk '(NR<1150640)' i > o
+
+# get length of col2 of the first line
+head -1 i | awk '{ print length($2)}'
