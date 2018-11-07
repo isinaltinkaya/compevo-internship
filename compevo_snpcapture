@@ -36,3 +36,6 @@ awk '(NR<1150640)' i > o
 
 # get length of col2 of the first line
 head -1 i | awk '{ print length($2)}'
+
+# add a line contains > p1_[LINE_NO] below every line 
+awk 'BEGIN{i=1} /.*/{printf "\np1_%d\n%s",i,$0; i++}'
